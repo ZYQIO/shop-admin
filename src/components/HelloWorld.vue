@@ -1,13 +1,10 @@
-<script setup lang="ts">
-import { ref, defineProps } from 'vue'
-
-defineProps<{ msg: string }>()
-
-const count = ref(0)
-</script>
-
 <template>
-  <h1>{{ msg }}</h1>
+  <h1 ref="title">
+    {{ msg }}
+  </h1>
+
+  <p>store: {{ $store.state.count }}</p>
+  <p>store: {{ store.state.count }}</p>
 
   <p>
     Recommended IDE setup:
@@ -49,6 +46,66 @@ const count = ref(0)
     <code>components/HelloWorld.vue</code> to test hot module replacement.
   </p>
 </template>
+
+<script lang="ts">
+import { ref, defineComponent, PropType, onMounted } from 'vue'
+// import { useStore } from 'vuex'
+import { useStore } from '@/store/index'
+
+interface User {
+  name: string,
+  age: number
+}
+
+export default defineComponent({
+  name: 'HelloWorld',
+  props: {
+    msg: {
+      type: String,
+      required: true
+    },
+    abc: {
+      type: Number,
+      required: true
+    },
+    obj: {
+      type: Object as PropType<User>,
+      default: () => {}
+    }
+  },
+  setup (props) {
+    // props.obj.name
+
+    const count = ref(0)
+    const store = useStore()
+
+    // store.state.count
+
+    const foo = ref<{
+      a: number,
+      b: string
+    } | null>(null)
+
+    foo.value = {
+      a: 1,
+      b: 'hello'
+    }
+
+    const title = ref<HTMLHeadElement | null>(null)
+
+    onMounted(() => {
+      console.log(title.value)
+    })
+
+    return {
+      count,
+      title,
+      store
+    }
+  }
+})
+
+</script>
 
 <style scoped>
 a {
